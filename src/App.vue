@@ -8,8 +8,11 @@
     <el-main>
       <div class="warpper">
         <DagToolbar @helper="handleHelper" />
-        <DagCanvas ref="dagRef" @drop="handleDrop" />
+        <DagCanvas ref="dagRef" @drop="handleDrop" @node="handleNode" @edge="handleEdge" />
       </div>
+
+      <Dialog ref="dialog" />
+      <Drawer ref="drawer" />
     </el-main>
   </el-container>
 </template>
@@ -19,12 +22,16 @@ import { Graph } from '@antv/x6'
 import DagCanvas from './comps/canvas/index.vue'
 import DagToolbar from './comps/toolbar/index.vue'
 import { register } from '@antv/x6-vue-shape'
+import Dialog from './comps/dialog/index.vue'
+import Drawer from './comps/drawer/index.vue'
 
 export default {
   name: 'App',
   components: {
     DagCanvas,
-    DagToolbar
+    DagToolbar,
+    Dialog,
+    Drawer
   },
   data() {
     return {
@@ -48,6 +55,14 @@ export default {
         y: e.clientY,
         ...item
       }
+    },
+    handleNode(node) {
+      console.log(node)
+      this.$refs.drawer.open(node)
+    },
+    handleEdge(edge) {
+      console.log(edge)
+      this.$refs.dialog.open(edge)
     }
   }
 }

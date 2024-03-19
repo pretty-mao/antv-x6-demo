@@ -20,6 +20,7 @@ export default {
     name: 'canvas',
     props: {
     },
+    emits: ['node', 'edge'],
     data() {
         return {
             graph: null,
@@ -242,13 +243,11 @@ export default {
             const graph = this.graph
             const container = this.$refs.paper
             graph.on('node:dblclick', ({ node, e }) => {
-                // 在这里处理双击事件
-                console.log('Node was double clicked:', node);
+                this.$emit('node', node, e)
             });
 
             this.graph.on('edge:dblclick', ({ edge, e }) => {
-                // 在这里处理双击事件
-                console.log('Edge was double clicked:', edge);
+                this.$emit('edge', edge, e)
             });
 
             graph.on('node:contextmenu', ({ node, e }) => {
