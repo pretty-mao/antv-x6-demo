@@ -1,6 +1,6 @@
 <template>
     <div class="node-warpper ">
-        {{ node?.name }}
+        {{ node?.name || '过程' }}
     </div>
 </template>
 

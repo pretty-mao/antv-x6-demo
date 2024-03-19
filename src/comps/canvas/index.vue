@@ -1,19 +1,20 @@
 <template>
-    <div class="container" ref="container" @drop="handleDrop" @dragenter.prevent @dragover.prevent @dragleave.prevent>
+    <div class="container" ref="container">
+        <div ref="sider" id="stencil"></div>
         <div ref="paper" class="paper"></div>
-        <div ref="minimap" class="minimap"></div>
     </div>
 </template>
 
 <script>
-import { Graph } from '@antv/x6';
+import { Graph, Shape } from '@antv/x6';
 import { Clipboard } from '@antv/x6-plugin-clipboard';
 import { History } from '@antv/x6-plugin-history';
 import { Keyboard } from '@antv/x6-plugin-keyboard';
 import { Selection } from '@antv/x6-plugin-selection';
 import { Snapline } from '@antv/x6-plugin-snapline';
-// import { Transform } from '@antv/x6-plugin-transform';
+import { portsGroups } from './config.js'
 import { debounce, uniqueId } from "lodash";
+import { Stencil } from '@antv/x6-plugin-stencil'
 
 export default {
     name: 'canvas',
@@ -22,20 +23,21 @@ export default {
     data() {
         return {
             graph: null,
+            stencil: null,
         }
     },
     methods: {
-        handleDrop(e) {
-            this.$emit('drop', e)
-        },
         // init
         initGraph() {
             this.graph = new Graph({
                 container: this.$refs.paper,
-                scroller: true,
-                grid: {
-                    size: 10,
-                    visible: true
+                grid: true,
+                mousewheel: {
+                    enabled: true,
+                    zoomAtMousePosition: true,
+                    modifiers: 'ctrl',
+                    minScale: 0.5,
+                    maxScale: 3,
                 },
                 connecting: {
                     router: 'manhattan',
@@ -43,29 +45,51 @@ export default {
                     allowLoop: false,
                     allowNode: false,
                     snap: true,
+                    connector: {
+                        name: 'rounded',
+                        args: {
+                            radius: 8,
+                        },
+                    },
+                    anchor: 'center',
+                    connectionPoint: 'anchor',
+                    allowBlank: false,
+                    snap: {
+                        radius: 20,
+                    },
+                    createEdge() {
+                        return new Shape.Edge({
+                            attrs: {
+                                line: {
+                                    stroke: '#A2B1C3',
+                                    strokeWidth: 2,
+                                    targetMarker: {
+                                        name: 'block',
+                                        width: 12,
+                                        height: 8,
+
+                                    },
+                                },
+                            },
+                            zIndex: 0,
+                            label: 'edge',
+                        })
+                    },
+                    validateConnection({ targetMagnet }) {
+                        return !!targetMagnet
+                    },
                 },
-                snapline: true,
-                scaling: {
-                    min: 0.2,
-                    max: 2
+                highlighting: {
+                    magnetAdsorbed: {
+                        name: 'stroke',
+                        args: {
+                            attrs: {
+                                fill: '#5F95FF',
+                                stroke: '#5F95FF',
+                            },
+                        },
+                    },
                 },
-                autoResize: this.$refs.container,
-                minimap: {
-                    enabled: true,
-                    width: 200,
-                    height: 120,
-                    container: this.$refs.minimap
-                },
-                selecting: {
-                    enabled: true,
-                    rubberband: true,
-                    movable: true,
-                    showEdgeSelectionBox: true,
-                    showNodeSelectionBox: true
-                },
-                keyboard: {
-                    enabled: true
-                }
             })
 
             this.graph
@@ -79,6 +103,126 @@ export default {
                 .use(new Keyboard())
                 .use(new Clipboard())
                 .use(new History())
+
+            const ports = {
+                groups: {
+                    top: {
+                        position: 'top',
+                        attrs: {
+                            circle: {
+                                r: 4,
+                                magnet: true,
+                                stroke: '#5F95FF',
+                                strokeWidth: 1,
+                                fill: '#fff',
+                                style: {
+                                    visibility: 'hidden',
+                                },
+                            },
+                        },
+                    },
+                    right: {
+                        position: 'right',
+                        attrs: {
+                            circle: {
+                                r: 4,
+                                magnet: true,
+                                stroke: '#5F95FF',
+                                strokeWidth: 1,
+                                fill: '#fff',
+                                style: {
+                                    visibility: 'hidden',
+                                },
+                            },
+                        },
+                    },
+                    bottom: {
+                        position: 'bottom',
+                        attrs: {
+                            circle: {
+                                r: 4,
+                                magnet: true,
+                                stroke: '#5F95FF',
+                                strokeWidth: 1,
+                                fill: '#fff',
+                                style: {
+                                    visibility: 'hidden',
+                                },
+                            },
+                        },
+                    },
+                    left: {
+                        position: 'left',
+                        attrs: {
+                            circle: {
+                                r: 4,
+                                magnet: true,
+                                stroke: '#5F95FF',
+                                strokeWidth: 1,
+                                fill: '#fff',
+                                style: {
+                                    visibility: 'hidden',
+                                },
+                            },
+                        },
+                    },
+                },
+                items: [
+                    {
+                        group: 'top',
+                    },
+
+                    {
+                        group: 'bottom',
+                    },
+                ],
+            }
+
+            Graph.registerNode(
+                'rect',
+                {
+                    inherit: 'rect',
+                    width: 66,
+                    height: 36,
+                    attrs: {
+                        body: {
+                            strokeWidth: 1,
+                            stroke: '#5F95FF',
+                            fill: '#EFF4FF',
+                        },
+                        text: {
+                            fontSize: 12,
+                            fill: '#262626',
+                        },
+                    },
+                    ports,
+                },
+                true,
+            )
+
+            Graph.registerNode(
+                'circle',
+                {
+                    inherit: 'circle',
+                    width: 45,
+                    height: 45,
+                    attrs: {
+                        body: {
+                            strokeWidth: 1,
+                            stroke: '#5F95FF',
+                            fill: '#EFF4FF',
+                        },
+                        text: {
+                            fontSize: 12,
+                            fill: '#262626',
+                        },
+                    },
+                    ports: {
+
+                    },
+                },
+                true,
+            )
         },
         initResize() {
             const resizeHandler = debounce(() => {
@@ -95,12 +239,14 @@ export default {
             observer.observe(this.$refs.container);
         },
         initevent() {
-            this.graph.on('node:dblclick', ({ node, e }) => {
+            const graph = this.graph
+            const container = this.$refs.paper
+            graph.on('node:dblclick', ({ node, e }) => {
                 // 在这里处理双击事件
                 console.log('Node was double clicked:', node);
             });
 
-            this.graph.on('node:contextmenu', ({ node, e }) => {
+            graph.on('node:contextmenu', ({ node, e }) => {
                 e.preventDefault(); // 阻止浏览器默认的右键菜单
 
                 // 创建并显示你的自定义菜单
@@ -133,8 +279,6 @@ export default {
                     document.body.removeChild(menu);
                 }, { once: true });
             });
-
-            const graph = this.graph
 
             graph.bindKey(['meta+c', 'ctrl+c'], () => {
                 const cells = graph.getSelectedCells()
@@ -202,48 +346,125 @@ export default {
                     graph.zoom(-0.1)
                 }
             })
-        },
-        // 新增节点
-        addShape(e, item) {
-            const { x, y } = this.graph.clientToLocal(e.clientX, e.clientY)
-            // 可以传入前缀 档期啊页面的id
-            const id = uniqueId('123')
 
-            const nodeSjape = {
-                ...item,
-                shape: 'custom',
-                x: x - item.x,
-                y: y - item.y,
-                id,
-                zIndex: 1,
-                width: 100,
-                height: 40,
-                data: {
-                    id,
-                    name: item.name,
-                    type: item.type,
-                    x,
-                    y,
-                },
-
+            const showPorts = (ports, show) => {
+                for (let i = 0, len = ports.length; i < len; i += 1) {
+                    ports[i].style.visibility = show ? 'visible' : 'hidden'
+                }
             }
-            this.graph.addNode(nodeSjape)
-            console.log('addShape', nodeSjape);
+            graph.on('node:mouseenter', () => {
+                const ports = container.querySelectorAll(
+                    '.x6-port-body',
+                )
+                showPorts(ports, true)
+            })
+            graph.on('node:mouseleave', () => {
+                const ports = container.querySelectorAll(
+                    '.x6-port-body',
+                )
+                showPorts(ports, false)
+            })
         },
+        initStencil() {
+            this.stencil = new Stencil({
+                title: '流程图',
+                target: this.graph,
+                stencilGraphWidth: 200,
+                stencilGraphHeight: 180,
+                layoutOptions: {
+                    columns: 1,
+                    columnWidth: 80,
+                    rowHeight: 55,
+                },
+                groups: [
+                    {
+                        name: 'default',
+                        title: '流程图',
+                        graphHeight: 180,
+                        layoutOptions: {
+                            columns: 1,
+                            columnWidth: 80,
+                            rowHeight: 55,
+                        },
+                    }
+                ]
+            })
 
+            const r1 = this.graph.createNode({
+                shape: 'circle',
+                label: '开始',
+                attrs: {
+                    body: {
+                        rx: 20,
+                        ry: 26,
+                    },
+                },
+                ports: {
+                    groups: portsGroups,
+                    items: [
+                        {
+                            group: 'out',
+                        },
+                    ],
+                }
+            })
+            const r2 = this.graph.createNode({
+                shape: 'rect',
+                label: '过程',
+                attrs: {
+                    body: {
+                        rx: 20,
+                        ry: 26,
+                    },
+                },
+                ports: {
+                    groups: portsGroups,
+                    items: [
+                        {
+                            group: 'out',
+                        },
+                        {
+                            group: 'in',
+                        }
+                    ],
+                }
+            })
+            const r3 = this.graph.createNode({
+                shape: 'circle',
+                label: '结束',
+                attrs: {
+                    body: {
+                        rx: 20,
+                        ry: 26,
+                    },
+                },
+                ports: {
+                    groups: portsGroups,
+                    items: [
+                        {
+                            group: 'in',
+                        },
+                    ],
+                }
+            })
+            this.stencil.load([r1, r2, r3], 'default')
+            document.getElementById('stencil').appendChild(this.stencil.container)
+        },
     },
     mounted() {
         this.initGraph()
         this.initResize()
         this.initevent()
+        this.initStencil()
     }
 }
 </script>
 
 <style scoped>
 .container {
-    width: calc(100% - 94px);
+    height: calc(100vh - 94px);
     width: 100%;
+    display: flex;
 }
 
 .minimap {
@@ -277,52 +498,5 @@ export default {
     height: 100%;
     position: relative;
     border-right: 1px solid #dfe3e8;
-}
-
-#graph-container {
-    width: calc(100% - 180px);
-    height: 100%;
-}
-
-.x6-widget-stencil {
-    background-color: #fff;
-}
-
-.x6-widget-stencil-title {
-    background-color: #fff;
-}
-
-.x6-widget-stencil-group-title {
-    background-color: #fff !important;
-}
-
-.x6-widget-transform {
-    margin: -1px 0 0 -1px;
-    padding: 0px;
-    border: 1px solid #239edd;
-}
-
-.x6-widget-transform>div {
-    border: 1px solid #239edd;
-}
-
-.x6-widget-transform>div:hover {
-    background-color: #3dafe4;
-}
-
-.x6-widget-transform-active-handle {
-    background-color: #3dafe4;
-}
-
-.x6-widget-transform-resize {
-    border-radius: 0;
-}
-
-.x6-widget-selection-inner {
-    border: 1px solid #239edd;
-}
-
-.x6-widget-selection-box {
-    opacity: 0;
 }
 </style>

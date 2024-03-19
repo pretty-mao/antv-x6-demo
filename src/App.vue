@@ -8,10 +8,7 @@
     <el-main>
       <div class="warpper">
         <DagToolbar @helper="handleHelper" />
-        <div class="flex">
-          <DagSidar @dragStart="handleDragStart" />
-          <DagCanvas ref="dagRef" @drop="handleDrop" />
-        </div>
+        <DagCanvas ref="dagRef" @drop="handleDrop" />
       </div>
     </el-main>
   </el-container>
@@ -20,23 +17,21 @@
 <script>
 import { Graph } from '@antv/x6'
 import DagCanvas from './comps/canvas/index.vue'
-import DagSidar from './comps/sidar/index.vue'
 import DagToolbar from './comps/toolbar/index.vue'
-import Node from './comps/node/index.vue'
+// import Node from './comps/node/index.vue'
 import { register } from '@antv/x6-vue-shape'
 
-register({
-  shape: 'custom',
-  width: 100,
-  height: 100,
-  component: Node,
-})
+// register({
+//   shape: 'custom-vue',
+//   width: 100,
+//   height: 38,
+//   component: Node,
+// })
 
 export default {
   name: 'App',
   components: {
     DagCanvas,
-    DagSidar,
     DagToolbar
   },
   data() {
