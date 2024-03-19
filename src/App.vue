@@ -18,15 +18,7 @@
 import { Graph } from '@antv/x6'
 import DagCanvas from './comps/canvas/index.vue'
 import DagToolbar from './comps/toolbar/index.vue'
-// import Node from './comps/node/index.vue'
 import { register } from '@antv/x6-vue-shape'
-
-// register({
-//   shape: 'custom-vue',
-//   width: 100,
-//   height: 38,
-//   component: Node,
-// })
 
 export default {
   name: 'App',

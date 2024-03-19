@@ -246,6 +246,11 @@ export default {
                 console.log('Node was double clicked:', node);
             });
 
+            this.graph.on('edge:dblclick', ({ edge, e }) => {
+                // 在这里处理双击事件
+                console.log('Edge was double clicked:', edge);
+            });
+
             graph.on('node:contextmenu', ({ node, e }) => {
                 e.preventDefault(); // 阻止浏览器默认的右键菜单
 
