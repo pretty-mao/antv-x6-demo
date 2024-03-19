@@ -9,8 +9,8 @@
       <div class="warpper">
         <DagToolbar @helper="handleHelper" />
         <div class="flex">
-          <DagSidar @drag="handleDrag" />
-          <DagCanvas ref="dagRef" />
+          <DagSidar @dragStart="handleDragStart" />
+          <DagCanvas ref="dagRef" @drop="handleDrop" />
         </div>
       </div>
     </el-main>
@@ -22,6 +22,16 @@ import { Graph } from '@antv/x6'
 import DagCanvas from './comps/canvas/index.vue'
 import DagSidar from './comps/sidar/index.vue'
 import DagToolbar from './comps/toolbar/index.vue'
+import Node from './comps/node/index.vue'
+import { register } from '@antv/x6-vue-shape'
+
+register({
+  shape: 'custom',
+  width: 100,
+  height: 100,
+  component: Node,
+})
+
 export default {
   name: 'App',
   components: {
@@ -40,12 +50,17 @@ export default {
     handleHelper() {
       console.log('handleHelper')
     },
-    handleDrag(item, e) {
-      this.$refs.dagRef.addShape({
+    handleDrop(e) {
+      e.stopPropagation()
+      e.preventDefault()
+      this.$refs.dagRef.addShape(e, this.item)
+    },
+    handleDragStart(item, e) {
+      this.item = {
         x: e.clientX,
         y: e.clientY,
         ...item
-      })
+      }
     }
   }
 }

@@ -7,3 +7,7 @@ export function uuid(prefix) {
       : id
   }
   
+
+export function createMenuItem(){
+  
+}

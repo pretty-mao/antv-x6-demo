@@ -21,7 +21,7 @@ export default {
     },
     methods: {
         handleDrag(item, e) {
-            this.$emit('drag', item, e)
+            this.$emit('dragStart', item, e)
         }
     }
 }
@@ -30,7 +30,7 @@ export default {
 <style scoped>
 .soder-warpper {
     height: calc(100vh - 200px);
-    width: 250px;
+    width: 100px;
     flex-shrink: 0;
     background-color: #fff;
     padding: 10px;
@@ -38,10 +38,11 @@ export default {
 }
 
 .item {
-    height: 50px;
+    height: 40px;
     cursor: pointer;
     padding: 1px 15px;
     border: 1px solid #eee;
     border-radius: 5px;
+    line-height: 40px;
 }
 </style>

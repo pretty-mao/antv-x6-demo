@@ -9,15 +9,23 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
     "vite-plugin-vue2": "^2.0.3"
   },
   "dependencies": {
     "@antv/x6": "^2.18.1",
-    "axios": "^1.6.2",
+    "@antv/x6-plugin-clipboard": "^2.1.6",
+    "@antv/x6-plugin-history": "^2.2.4",
+    "@antv/x6-plugin-keyboard": "^2.2.3",
+    "@antv/x6-plugin-selection": "^2.2.2",
+    "@antv/x6-plugin-snapline": "^2.1.7",
+    "@antv/x6-plugin-stencil": "^2.1.5",
+    "@antv/x6-plugin-transform": "^2.1.8",
+    "@antv/x6-vue-shape": "^2.1.2",
     "element-ui": "^2.15.14",
-    "mermaid": "^10.9.0",
+    "lodash": "^4.17.21",
     "vue": "2.7.15"
   }
 }
