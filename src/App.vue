@@ -7,8 +7,14 @@
     </el-steps>
     <el-main>
       <div class="warpper">
-        <DagToolbar @helper="handleHelper" />
-        <DagCanvas ref="dagRef" @drop="handleDrop" @node="handleNode" @edge="handleEdge" />
+        <DagToolbar @helper="handleHelper" :ratio="ratio" />
+        <DagCanvas
+          ref="dagRef"
+          @drop="handleDrop"
+          @node="handleNode"
+          @edge="handleEdge"
+          @changeratio="changeratio"
+        />
       </div>
 
       <Dialog ref="dialog" />
@@ -18,71 +24,85 @@
 </template>
 
 <script>
-import { Graph } from '@antv/x6'
-import DagCanvas from './comps/canvas/index.vue'
-import DagToolbar from './comps/toolbar/index.vue'
-import { register } from '@antv/x6-vue-shape'
-import Dialog from './comps/dialog/index.vue'
-import Drawer from './comps/drawer/index.vue'
+import { Graph } from "@antv/x6";
+import DagCanvas from "./comps/canvas/index.vue";
+import DagToolbar from "./comps/toolbar/index.vue";
+import { register } from "@antv/x6-vue-shape";
+import Dialog from "./comps/dialog/index.vue";
+import Drawer from "./comps/drawer/index.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   provide() {
     return {
-      getGraph: () => this.$refs.dagRef.getGraph()
-    }
+      getGraph: () => this.$refs.dagRef.getGraph(),
+    };
   },
   components: {
     DagCanvas,
     DagToolbar,
     Dialog,
-    Drawer
+    Drawer,
   },
   data() {
     return {
       item: {},
-    }
+      ratio: "100%",
+    };
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
-    handleHelper() {
-      console.log('handleHelper')
+    handleHelper(val) {
+      console.log("头部事件", val);
+      if (val === "zoom") {
+        this.$refs.dagRef.zoomOut();
+      } else if (val === "large") {
+        this.$refs.dagRef.amplification();
+      } else if (val === "direction") {
+        this.$refs.dagRef.direction();
+      } else if (val === "save") {
+        this.$refs.dagRef.save();
+      } else {
+        this.$refs.dagRef.center();
+      }
     },
     handleDrop(e) {
-      e.stopPropagation()
-      e.preventDefault()
-      this.$refs.dagRef.addShape(e, this.item)
+      e.stopPropagation();
+      e.preventDefault();
+      this.$refs.dagRef.addShape(e, this.item);
     },
     handleDragStart(item, e) {
       this.item = {
         x: e.clientX,
         y: e.clientY,
-        ...item
-      }
+        ...item,
+      };
     },
     handleNode(node) {
-      console.log(node)
-      this.$refs.drawer.open(node)
+      console.log(node);
+      this.$refs.drawer.open(node);
     },
     handleEdge(edge) {
-      console.log(edge)
-      this.$refs.dialog.open(edge)
-    }
-  }
-}
+      console.log(edge);
+      this.$refs.dialog.open(edge);
+    },
+    changeratio(val) {
+      this.ratio = val;
+    },
+  },
+};
 </script>
 
 <style scoped>
 .el-header {
-  background-color: #B3C0D1;
+  background-color: #b3c0d1;
   color: #333;
   text-align: center;
   line-height: 60px;
 }
 
 .el-main {
-  background-color: #E9EEF3;
+  background-color: #e9eef3;
   color: #333;
   text-align: center;
   line-height: 160px;
@@ -91,7 +111,7 @@ export default {
 .el-container {
   height: 100%;
   width: 100%;
-  flex-direction: column
+  flex-direction: column;
 }
 
 .el-main {
