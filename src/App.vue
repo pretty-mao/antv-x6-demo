@@ -27,6 +27,11 @@ import Drawer from './comps/drawer/index.vue'
 
 export default {
   name: 'App',
+  provide() {
+    return {
+      getGraph: () => this.$refs.dagRef.getGraph()
+    }
+  },
   components: {
     DagCanvas,
     DagToolbar,

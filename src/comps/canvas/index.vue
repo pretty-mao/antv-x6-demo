@@ -59,21 +59,28 @@ export default {
                         radius: 20,
                     },
                     createEdge() {
+                        console.log('createEdge');
                         return new Shape.Edge({
                             attrs: {
                                 line: {
                                     stroke: '#A2B1C3',
                                     strokeWidth: 2,
                                     targetMarker: {
-                                        name: 'block',
-                                        width: 12,
-                                        height: 8,
-
+                                        name: 'classic',
+                                        size: 8
                                     },
                                 },
                             },
                             zIndex: 0,
                             label: 'edge',
+                            router: {
+                                name: 'manhattan',
+                                args: {
+                                    startDirections: ['right'],
+                                    endDirections: ['left'],
+                                },
+                            },
+                            connector: { name: 'smooth' },
                         })
                     },
                     validateConnection({ targetMagnet }) {
@@ -105,80 +112,6 @@ export default {
                 .use(new Clipboard())
                 .use(new History())
 
-            const ports = {
-                groups: {
-                    top: {
-                        position: 'top',
-                        attrs: {
-                            circle: {
-                                r: 4,
-                                magnet: true,
-                                stroke: '#5F95FF',
-                                strokeWidth: 1,
-                                fill: '#fff',
-                                style: {
-                                    visibility: 'hidden',
-                                },
-                            },
-                        },
-                    },
-                    right: {
-                        position: 'right',
-                        attrs: {
-                            circle: {
-                                r: 4,
-                                magnet: true,
-                                stroke: '#5F95FF',
-                                strokeWidth: 1,
-                                fill: '#fff',
-                                style: {
-                                    visibility: 'hidden',
-                                },
-                            },
-                        },
-                    },
-                    bottom: {
-                        position: 'bottom',
-                        attrs: {
-                            circle: {
-                                r: 4,
-                                magnet: true,
-                                stroke: '#5F95FF',
-                                strokeWidth: 1,
-                                fill: '#fff',
-                                style: {
-                                    visibility: 'hidden',
-                                },
-                            },
-                        },
-                    },
-                    left: {
-                        position: 'left',
-                        attrs: {
-                            circle: {
-                                r: 4,
-                                magnet: true,
-                                stroke: '#5F95FF',
-                                strokeWidth: 1,
-                                fill: '#fff',
-                                style: {
-                                    visibility: 'hidden',
-                                },
-                            },
-                        },
-                    },
-                },
-                items: [
-                    {
-                        group: 'top',
-                    },
-
-                    {
-                        group: 'bottom',
-                    },
-                ],
-            }
-
             Graph.registerNode(
                 'rect',
                 {
@@ -196,7 +129,6 @@ export default {
                             fill: '#262626',
                         },
                     },
-                    ports,
                 },
                 true,
             )
@@ -217,9 +149,6 @@ export default {
                             fontSize: 12,
                             fill: '#262626',
                         },
-                    },
-                    ports: {
-
                     },
                 },
                 true,
@@ -454,6 +383,9 @@ export default {
             this.stencil.load([r1, r2, r3], 'default')
             document.getElementById('stencil').appendChild(this.stencil.container)
         },
+        getGraph() {
+            return this.graph
+        }
     },
     mounted() {
         this.initGraph()
