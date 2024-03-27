@@ -72,10 +72,13 @@ export default {
   },
   methods: {
     getArea() {
+      console.log(11);
       if ("geolocation" in navigator) {
+        console.log(22);
         // Location.installWebGeolocationPolyfill();
         navigator.geolocation.getCurrentPosition(
           (position) => {
+            console.log(33);
             alert("打卡距离11", this.distance);
             var longitude = position.coords.longitude;
             var latitude = position.coords.latitude;
@@ -93,7 +96,6 @@ export default {
             );
             console.log(this.distance, "距离");
             window.alert("距离" + this.distance + "米");
-
             // if (distance < 500) {
             //   console.log("在500m以内");
             // } else {
@@ -102,6 +104,8 @@ export default {
           },
           (error) => {
             alert("错误", error.code + " - " + error.message);
+            console.log(444);
+            console.error(error, 44);
             console.error("Error Code = " + error.code + " - " + error.message);
           },
           this.options
