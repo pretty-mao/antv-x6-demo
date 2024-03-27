@@ -74,8 +74,6 @@ export default {
     getArea() {
       console.log(11);
       if ("geolocation" in navigator) {
-        console.log(22);
-        // Location.installWebGeolocationPolyfill();
         navigator.geolocation.getCurrentPosition(
           (position) => {
             console.log(33);
@@ -103,10 +101,15 @@ export default {
             // }
           },
           (error) => {
-            alert("错误", error.code + " - " + error.message);
-            console.log(444);
-            console.error(error, 44);
-            console.error("Error Code = " + error.code + " - " + error.message);
+            if (error.code === error.PERMISSION_DENIED) {
+              console.error("用户拒绝了地理位置权限");
+              alert("记得开手机定位权限啊");
+            } else {
+              alert("错误", error.message);
+              console.error(
+                "Error Code = " + error.code + " - " + error.message
+              );
+            }
           },
           this.options
         );
