@@ -10,13 +10,7 @@
     <el-main>
       <div class="warpper">
         <DagToolbar @helper="handleHelper" :ratio="ratio" />
-        <DagCanvas
-          ref="dagRef"
-          @drop="handleDrop"
-          @node="handleNode"
-          @edge="handleEdge"
-          @changeratio="changeratio"
-        />
+        <DagCanvas ref="dagRef" @drop="handleDrop" @node="handleNode" @edge="handleEdge" @changeratio="changeratio" />
       </div>
 
       <Dialog ref="dialog" />
@@ -73,7 +67,6 @@ export default {
   methods: {
     getArea() {
       if ("geolocation" in navigator) {
-        // Location.installWebGeolocationPolyfill();
         navigator.geolocation.getCurrentPosition(
           (position) => {
             alert("打卡距离11", this.distance);
@@ -101,8 +94,13 @@ export default {
             // }
           },
           (error) => {
-            alert("错误", error.code + " - " + error.message);
-            console.error("Error Code = " + error.code + " - " + error.message);
+            if (error.code === error.PERMISSION_DENIED) {
+              console.error("用户拒绝了地理位置权限");
+              alert('记得开手机定位权限啊')
+            } else {
+              alert("错误", error.message);
+              console.error("Error Code = " + error.code + " - " + error.message);
+            }
           },
           this.options
         );
@@ -133,9 +131,9 @@ export default {
         Math.asin(
           Math.sqrt(
             Math.pow(Math.sin(a / 2), 2) +
-              Math.cos(radLat1) *
-                Math.cos(radLat2) *
-                Math.pow(Math.sin(b / 2), 2)
+            Math.cos(radLat1) *
+            Math.cos(radLat2) *
+            Math.pow(Math.sin(b / 2), 2)
           )
         );
       s = s * 6378.137;

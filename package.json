@@ -10,8 +10,9 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.17.0",
+    "@vitejs/plugin-basic-ssl": "^1.1.0",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5",
+    "vite": "^4.5.3",
     "vite-plugin-vue2": "^2.0.3"
   },
   "dependencies": {
@@ -26,10 +27,8 @@
     "@antv/x6-plugin-transform": "^2.1.8",
     "@antv/x6-vue-shape": "^2.1.2",
     "element-ui": "^2.15.14",
-    "expo-location": "^16.5.5",
     "geolib": "^3.3.4",
     "lodash": "^4.17.21",
-    "pnpm": "^8.15.5",
     "vue": "2.7.15"
   }
 }
